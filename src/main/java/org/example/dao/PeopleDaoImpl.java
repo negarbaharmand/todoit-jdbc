@@ -62,6 +62,24 @@ public class PeopleDaoImpl implements PeopleDao {
 
     @Override
     public Person findById(int id) {
+        try (Connection connection = MySQLConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("select * from Person where person_id = ? ");
+        ) {
+            preparedStatement.setInt(1, id);
+            try (
+                    ResultSet resultSet = preparedStatement.executeQuery()) {
+                Person person = null;
+                if (resultSet.next()) {
+                    String firstName = resultSet.getString("first_name");
+                    String lastName = resultSet.getString("last_name");
+                    person = new Person(id, firstName, lastName);
+                }
+                return person;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
