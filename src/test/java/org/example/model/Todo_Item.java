@@ -3,6 +3,7 @@ package org.example.model;
 import org.example.dataInterfaces.TodoItems;
 
 import java.time.LocalDate;
+import java.util.Collection;
 
 public class Todo_Item implements TodoItems {
     private int todo_id;
@@ -53,9 +54,55 @@ public class Todo_Item implements TodoItems {
         return assignee_id;
     }
 
+    @Override
+    public String toString() {
+        return "Todo_Item{" +
+                "todo_id=" + todo_id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", deadline=" + deadline +
+                ", done=" + done +
+                ", assignee_id=" + assignee_id +
+                '}';
+    }
 
+    @Override
+    public Todo_Item create(Todo_Item item) {
+        return null;
+    }
 
+    @Override
+    public Collection<Todo_Item> findAll() {
+        return null;
+    }
 
+    @Override
+    public Todo_Item findById(int id) {
+        return null;
+    }
 
+    @Override
+    public Collection<Todo_Item> findByDoneStatus(boolean val) {
+        return null;
+    }
 
+    @Override
+    public Collection<Todo_Item> findByAssignee(Person per) {
+        return null;
+    }
+
+    @Override
+    public Collection<Todo_Item> findByUnassignedTodoItems() {
+        return null;
+    }
+
+    @Override
+    public Todo_Item update(Todo_Item item) {
+        return null;
+    }
+
+    @Override
+    public boolean deleteById(int delId) {
+        return false;
+    }
 }

@@ -31,6 +31,46 @@ public class Person implements People {
         return lastName;
     }
 
+    public Person() {
+        super();
+    }
 
+    @Override
+    public String toString() {
+        return "Person{" +
+                "person_id=" + person_id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
+    }
 
+    @Override
+    public Person create(Person person) {
+        return null;
+    }
+
+    @Override
+    public Collection<Person> findAll() {
+        return null;
+    }
+
+    @Override
+    public Person findById(int id) {
+        return null;
+    }
+
+    @Override
+    public Collection<Person> findByName(String name) {
+        return null;
+    }
+
+    @Override
+    public Person update(Person person) {
+        return null;
+    }
+
+    @Override
+    public boolean deleteById(int id) {
+        return false;
+    }
 }
