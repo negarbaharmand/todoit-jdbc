@@ -1,10 +1,10 @@
-package org.example.dataInterfaces;
+package org.example.dao;
 
 import org.example.model.Person;
 
 import java.util.Collection;
 
-public interface People {
+public interface PeopleDao {
     Person create(Person person);
 
     Collection<Person> findAll();

@@ -1,11 +1,11 @@
-package org.example.dataInterfaces;
+package org.example.dao;
 
 import org.example.model.Person;
 import org.example.model.Todo_Item;
 
 import java.util.Collection;
 
-public interface TodoItems {
+public interface TodoItemsDao {
     Todo_Item create(Todo_Item item);
     Collection<Todo_Item> findAll();
     Todo_Item findById(int id);
