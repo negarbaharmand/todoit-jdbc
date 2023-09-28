@@ -85,7 +85,27 @@ public class PeopleDaoImpl implements PeopleDao {
 
     @Override
     public Collection<Person> findByName(String name) {
-        return null;
+        List<Person> people = new ArrayList<Person>();
+        try (Connection connection = MySQLConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("select * from Person where first_name like ? ");
+        ) {
+            preparedStatement.setString(1, "%" + name + "%");
+            try (
+                    ResultSet resultSet = preparedStatement.executeQuery()) {
+
+                while (resultSet.next()) {
+                    int personId = resultSet.getInt(1);
+                    String firstName = resultSet.getString(2);
+                    String lastName = resultSet.getString(3);
+                    people.add(new Person(personId, firstName, lastName));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return people;
     }
 
     @Override
