@@ -87,9 +87,9 @@ public class PeopleDaoImpl implements PeopleDao {
     public Collection<Person> findByName(String name) {
         List<Person> people = new ArrayList<Person>();
         try (Connection connection = MySQLConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("select * from Person where first_name like ? ");
+             PreparedStatement preparedStatement = connection.prepareStatement("select * from Person where first_name = ? ");
         ) {
-            preparedStatement.setString(1, "%" + name + "%");
+            preparedStatement.setString(1, "name");
             try (
                     ResultSet resultSet = preparedStatement.executeQuery()) {
 
@@ -99,8 +99,6 @@ public class PeopleDaoImpl implements PeopleDao {
                     String lastName = resultSet.getString(3);
                     people.add(new Person(personId, firstName, lastName));
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -110,8 +108,27 @@ public class PeopleDaoImpl implements PeopleDao {
 
     @Override
     public Person update(Person person) {
-        return null;
+
+        try (Connection connection = MySQLConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("update person set first_name = ?, last_name = ? where person_id = ?")) {
+
+            preparedStatement.setString(1, person.getFirstName());
+            preparedStatement.setString(2, person.getLastName());
+            preparedStatement.setInt(3, person.getPerson_id());
+
+            int updatedPerson = preparedStatement.executeUpdate();
+            if (updatedPerson == 1) {
+                return person;
+            } else {
+                return null;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
+
 
     @Override
     public boolean deleteById(int id) {
