@@ -132,6 +132,14 @@ public class PeopleDaoImpl implements PeopleDao {
 
     @Override
     public boolean deleteById(int id) {
-        return false;
+        try (Connection connection = MySQLConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("delete from person where person_id = ?")) {
+            preparedStatement.setInt(1, id);
+            int deletedPerson = preparedStatement.executeUpdate();
+            return deletedPerson > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
