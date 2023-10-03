@@ -137,16 +137,68 @@ public class TodoItemDaoImpl implements TodoItemsDao {
 
     @Override
     public Collection<Todo_Item> findByAssignee(Person per) {
-        return null;
+        List<Todo_Item> items = new ArrayList<>();
+        String query = "Select from todo_item where assignee_id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, per.getPerson_id());
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    int todoId = resultSet.getInt(1);
+                    String title = resultSet.getString(2);
+                    String description = resultSet.getString(3);
+                    LocalDate deadline = resultSet.getDate(4).toLocalDate();
+                    boolean done = resultSet.getBoolean(5);
+                    Todo_Item item = new Todo_Item(todoId, title, description, deadline, done, per.getPerson_id());
+                    items.add(item);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return items;
     }
 
     @Override
     public Collection<Todo_Item> findByUnassignedTodoItems() {
-        return null;
+        List<Todo_Item> items = new ArrayList<>();
+        String query = "Select * from todo_item where assignee_id is null";
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+            while (resultSet.next()) {
+                int todoId = resultSet.getInt(1);
+                String title = resultSet.getString(2);
+                String description = resultSet.getString(3);
+                LocalDate deadline = resultSet.getDate(4).toLocalDate();
+                boolean done = resultSet.getBoolean(5);
+                // FIXME How to create a todo_item with assignee_id null?
+                Todo_Item item = new Todo_Item(todoId, title, description, deadline, done, null);
+                items.add(item);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return items;
     }
 
     @Override
     public Todo_Item update(Todo_Item item) {
+        String query = "Update todo_item set title=?, description=?, deadline=?, done=?, assignee_id=?, where id=?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, item.getTitle());
+            preparedStatement.setString(2, item.getDescription());
+            preparedStatement.setDate(3, java.sql.Date.valueOf(item.getDeadline()));
+            preparedStatement.setBoolean(4, item.getDone());
+            preparedStatement.setInt(5, item.getAssignee_id());
+            preparedStatement.setInt(6, item.getTodo_id());
+
+            int rowsUpdated = preparedStatement.executeUpdate();
+            if (rowsUpdated == 1) {
+                System.out.println("Todo item with id: " + item.getTodo_id() + " was successfully updated.");
+                return item;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
