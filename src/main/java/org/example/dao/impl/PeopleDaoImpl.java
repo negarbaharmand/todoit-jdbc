@@ -1,6 +1,7 @@
-package org.example.dao;
+package org.example.dao.impl;
 
-import org.example.db.MySQLConnection;
+import org.example.dao.PeopleDao;
+import org.example.dao.impl.db.MySQLConnection;
 import org.example.model.Person;
 
 import java.sql.*;
@@ -116,17 +117,19 @@ public class PeopleDaoImpl implements PeopleDao {
             preparedStatement.setString(2, person.getLastName());
             preparedStatement.setInt(3, person.getPerson_id());
 
-            int updatedPerson = preparedStatement.executeUpdate();
-            if (updatedPerson == 1) {
+            int rowsUpdated = preparedStatement.executeUpdate();
+            if (rowsUpdated == 1) {
+                System.out.println("Person with id: " + person.getPerson_id() + "was successfully updated.");
                 return person;
             } else {
-                return null;
+                System.out.println("Person with id: " + person.getPerson_id() + " was not found.");
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
+
         }
+        return null;
     }
 
 
@@ -135,8 +138,8 @@ public class PeopleDaoImpl implements PeopleDao {
         try (Connection connection = MySQLConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("delete from person where person_id = ?")) {
             preparedStatement.setInt(1, id);
-            int deletedPerson = preparedStatement.executeUpdate();
-            return deletedPerson > 0;
+            int rowsDeleted = preparedStatement.executeUpdate();
+            return rowsDeleted > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

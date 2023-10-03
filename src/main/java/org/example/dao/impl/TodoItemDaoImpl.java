@@ -1,6 +1,6 @@
-package org.example.dao;
+package org.example.dao.impl;
 
-import org.example.db.MySQLConnection;
+import org.example.dao.TodoItemsDao;
 import org.example.model.Person;
 import org.example.model.Todo_Item;
 
@@ -11,12 +11,18 @@ import java.util.Collection;
 import java.util.List;
 
 public class TodoItemDaoImpl implements TodoItemsDao {
+    private Connection connection;
+
+    public TodoItemDaoImpl(Connection connection) {
+        this.connection = connection;
+    }
+
     @Override
     public Todo_Item create(Todo_Item item) {
 
         String query = "insert into todo_item (title, description, deadline, done, assignee_id) values (?, ?, ?, ?, ?)";
 
-        try (Connection connection = MySQLConnection.getConnection();
+        try (
              PreparedStatement preparedStatement = connection.prepareStatement(query);
         ) {
             preparedStatement.setString(1, item.getTitle());
@@ -49,7 +55,7 @@ public class TodoItemDaoImpl implements TodoItemsDao {
     public Collection<Todo_Item> findAll() {
         List<Todo_Item> items = new ArrayList<Todo_Item>();
         String query = "SELECT * from todo_item";
-        try (Connection connection = MySQLConnection.getConnection();
+        try (
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery("query");
         ) {
@@ -72,6 +78,28 @@ public class TodoItemDaoImpl implements TodoItemsDao {
 
     @Override
     public Todo_Item findById(int id) {
+        String query = "select * from todo_item where id = ?";
+        try(
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+                ) {
+            preparedStatement.setInt(1, id);
+            try(ResultSet resultSet = preparedStatement.executeQuery();) {
+            if (resultSet.next()) {
+                int todoId = resultSet.getInt(1);
+                String title = resultSet.getString(2);
+                String description = resultSet.getString(3);
+                LocalDate deadline = resultSet.getDate(4).toLocalDate();
+                boolean done = resultSet.getBoolean(5);
+                int assignedId = resultSet.getInt(6);
+                return new Todo_Item(todoId, title, description, deadline, done, assignedId);
+            }
+        }catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
