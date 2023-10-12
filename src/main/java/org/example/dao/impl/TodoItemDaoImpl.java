@@ -91,6 +91,7 @@ public class TodoItemDaoImpl implements TodoItemsDao {
                     int todoId = resultSet.getInt(1);
                     String title = resultSet.getString(2);
                     String description = resultSet.getString(3);
+                    // Can be written as: Timestamp deadline = resultSet.getTimestamp(4);
                     LocalDate deadline = resultSet.getDate(4).toLocalDate();
                     boolean done = resultSet.getBoolean(5);
                     int assignedId = resultSet.getInt(6);
@@ -170,8 +171,7 @@ public class TodoItemDaoImpl implements TodoItemsDao {
                 String description = resultSet.getString(3);
                 LocalDate deadline = resultSet.getDate(4).toLocalDate();
                 boolean done = resultSet.getBoolean(5);
-                // FIXME How to create a todo_item with assignee_id null?
-                Todo_Item item = new Todo_Item(todoId, title, description, deadline, done, null);
+                Todo_Item item = new Todo_Item(todoId, title, description, deadline, done, 0);
                 items.add(item);
             }
         } catch (SQLException e) {

@@ -11,6 +11,7 @@ public class Todo_Item {
     private boolean done;
     private int assignee_id;
 
+
     public Todo_Item(int todo_id, String title, String description, LocalDate deadline, boolean done, int assignee_id) {
         this.todo_id = todo_id;
         this.title = title;
